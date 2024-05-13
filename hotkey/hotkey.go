@@ -5,14 +5,15 @@ import (
 	"hotkey/input"
 )
 
+type Status map[input.KeyCode]bool
+
 type Hotkey struct {
-	Fired bool
+	KeyCombination []input.KeyCode
+	status         Status
 }
 
 func (h *Hotkey) Register() {
-	kbdInput := input.Input{
-		EventsPath: "/dev/input/event6",
-	}
+	kbdInput := input.Input{}
 
 	kbdInput.NewInput()
 	defer kbdInput.Unsubscribe()

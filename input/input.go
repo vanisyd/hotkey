@@ -3,12 +3,21 @@ package input
 import (
 	"bytes"
 	"encoding/binary"
+	"log"
 	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
+	"syscall"
 )
 
 type KeyCode uint16
 type KeyMode uint32
 type EventType uint16
+
+const (
+	TypeKeyboard string = "Keyboard"
+)
 
 const (
 	ModeKeyRelease KeyMode = 0
@@ -25,10 +34,11 @@ const (
 const EventTypeKeyPress EventType = 1
 
 type Event struct {
-	Val1, Val2, Val3, Val4 uint32
-	Type                   EventType
-	Key                    KeyCode
-	Mode                   KeyMode
+	Timestamp        syscall.Timeval
+	Val2, Val3, Val4 uint32 // We don't need this data, TODO: find a way to skip it
+	Type             EventType
+	Key              KeyCode
+	Mode             KeyMode
 }
 
 type Input struct {
@@ -41,7 +51,29 @@ type Input struct {
 func (i *Input) NewInput() {
 	i.CurrentEvent = make(chan Event, 100)
 	i.shouldUnsubscribe = make(chan int)
-	//TODO: scan files in /sys/class/input/event*/device/name and find the one needed (Keyboard)
+
+	//we can scan files in /sys/class/input/event*/device/name and find events file of the needed input type
+	if len(i.EventsPath) == 0 {
+		files, err := filepath.Glob("/sys/class/input/event*/device/name")
+		if err != nil {
+			panic(err)
+		}
+
+		for _, file := range files {
+			fileContent, err := os.ReadFile(file)
+			if err != nil {
+				log.Printf("Error reading file %v\n", err)
+			}
+			isInput := strings.Contains(string(fileContent), TypeKeyboard)
+			if isInput {
+				expression, _ := regexp.Compile(`event\d+`)
+				fileName := expression.FindString(file)
+				if len(fileName) > 0 {
+					i.EventsPath = "/dev/input/" + fileName
+				}
+			}
+		}
+	}
 }
 
 func (i *Input) Subscribe() {
