@@ -39,7 +39,7 @@ type Input struct {
 }
 
 func (i *Input) NewInput() {
-	i.CurrentEvent = make(chan Event)
+	i.CurrentEvent = make(chan Event, 100)
 	i.shouldUnsubscribe = make(chan int)
 	//TODO: scan files in /sys/class/input/event*/device/name and find the one needed (Keyboard)
 }
