@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
-	"syscall"
 )
 
 type KeyCode uint16
@@ -34,11 +33,10 @@ const (
 const EventTypeKeyPress EventType = 1
 
 type Event struct {
-	Timestamp        syscall.Timeval
-	Val2, Val3, Val4 uint32 // We don't need this data, TODO: find a way to skip it
-	Type             EventType
-	Key              KeyCode
-	Mode             KeyMode
+	Val1, Val2, Val3, Val4 uint32 // We don't need this data, TODO: find a way to skip it
+	Type                   EventType
+	Key                    KeyCode
+	Mode                   KeyMode
 }
 
 type Input struct {
