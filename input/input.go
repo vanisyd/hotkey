@@ -11,18 +11,18 @@ type KeyMode uint32
 type EventType uint16
 
 const (
-	modeKeyRelease KeyMode = 0
-	modeKeyPress   KeyMode = 1
-	modeKeyHold    KeyMode = 2
+	ModeKeyRelease KeyMode = 0
+	ModeKeyPress   KeyMode = 1
+	ModeKeyHold    KeyMode = 2
 )
 
 const (
-	keyCtrl KeyCode = 29
-	keyE    KeyCode = 18
-	keyC    KeyCode = 46
+	KeyCtrl KeyCode = 29
+	KeyE    KeyCode = 18
+	KeyC    KeyCode = 46
 )
 
-const eventTypeKeyPress EventType = 1
+const EventTypeKeyPress EventType = 1
 
 type Event struct {
 	Val1, Val2, Val3, Val4 uint32
@@ -32,23 +32,27 @@ type Event struct {
 }
 
 type Input struct {
-	EventsPath string
-	Event      Event
+	EventsPath        string
+	Event             Event
+	CurrentEvent      chan Event
+	shouldUnsubscribe chan int
 }
 
 func (i *Input) NewInput() {
+	i.CurrentEvent = make(chan Event)
+	i.shouldUnsubscribe = make(chan int)
 	//TODO: scan files in /sys/class/input/event*/device/name and find the one needed (Keyboard)
 }
 
-func (i *Input) Subscribe(result chan string) {
+func (i *Input) Subscribe() {
 	f, err := os.Open(i.EventsPath)
 	if err != nil {
 		panic(err)
 	}
 	defer f.Close()
 
+	data := make([]byte, 24)
 	for {
-		data := make([]byte, 24)
 		_, err := f.Read(data)
 		if err != nil {
 			panic(err)
@@ -59,9 +63,22 @@ func (i *Input) Subscribe(result chan string) {
 			panic(err)
 		}
 
-		if i.Event.Type == eventTypeKeyPress && i.Event.Key == keyCtrl && i.Event.Mode == modeKeyHold {
-			result <- "HOLD!"
+		select {
+		case i.CurrentEvent <- i.Event:
+		default:
 		}
+
+		select {
+		case <-i.shouldUnsubscribe:
+			return
+		default:
+		}
+
 		//fmt.Printf("Type: %v Code: %v Mode: %v\n", i.Event.Type, i.Event.Key, i.Event.Mode)
 	}
+}
+
+func (i *Input) Unsubscribe() {
+	i.shouldUnsubscribe <- 0
+	close(i.shouldUnsubscribe)
 }
