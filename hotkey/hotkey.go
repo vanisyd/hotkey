@@ -12,7 +12,7 @@ type Hotkey struct {
 }
 
 func (h *Hotkey) Register() {
-	h.Fired = make(chan int)
+	h.Fired = make(chan int, 1)
 	h.status = map[input.KeyCode]bool{}
 	for _, key := range h.KeyCombination {
 		h.status[key] = false
@@ -43,13 +43,12 @@ func (h *Hotkey) Register() {
 }
 
 func (h *Hotkey) checkStatus() bool {
-	hotkeyPressed := false
+	hotkeyPressed := true
 	for _, keyStatus := range h.status {
 		if !keyStatus {
 			hotkeyPressed = false
 			break
 		}
-		hotkeyPressed = true
 	}
 
 	return hotkeyPressed

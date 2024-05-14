@@ -94,18 +94,13 @@ func (i *Input) Subscribe() {
 			panic(err)
 		}
 
-		select {
-		case i.CurrentEvent <- i.Event:
-		default:
-		}
+		i.CurrentEvent <- i.Event
 
 		select {
 		case <-i.shouldUnsubscribe:
 			return
 		default:
 		}
-
-		//fmt.Printf("Type: %v Code: %v Mode: %v\n", i.Event.Type, i.Event.Key, i.Event.Mode)
 	}
 }
 
