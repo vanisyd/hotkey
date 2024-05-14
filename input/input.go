@@ -33,10 +33,11 @@ const (
 const EventTypeKeyPress EventType = 1
 
 type Event struct {
-	Val1, Val2, Val3, Val4 uint32 // We don't need this data, TODO: find a way to skip it
-	Type                   EventType
-	Key                    KeyCode
-	Mode                   KeyMode
+	Timestamp        uint32
+	Val2, Val3, Val4 uint32 // We don't need this data, TODO: find a way to skip it
+	Type             EventType
+	Key              KeyCode
+	Mode             KeyMode
 }
 
 type Input struct {
