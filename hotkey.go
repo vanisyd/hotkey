@@ -1,8 +1,6 @@
-package hotkey
+package github
 
-import (
-	"hotkey/input"
-)
+import "github.com/vanisyd/hotkey/input"
 
 const maxTimeout = 2 //allowed difference between timestamps when multi tap feature enabled
 
