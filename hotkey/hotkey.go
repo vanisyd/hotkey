@@ -1,7 +1,6 @@
 package hotkey
 
 import (
-	"fmt"
 	"hotkey/input"
 )
 
@@ -25,7 +24,7 @@ func (h *Hotkey) Register() {
 	go kbdInput.Subscribe()
 	for {
 		curEvent := <-kbdInput.CurrentEvent
-		fmt.Printf("Timestamp: %v Type: %v Code: %v Mode: %v\n", curEvent.Timestamp, curEvent.Type, curEvent.Key, curEvent.Mode)
+		//fmt.Printf("Timestamp: %v Type: %v Code: %v Mode: %v\n", curEvent.Timestamp, curEvent.Type, curEvent.Key, curEvent.Mode)
 		if curEvent.Type == input.EventTypeKeyPress {
 			_, ok := h.status[curEvent.Key]
 			if ok {
