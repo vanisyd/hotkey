@@ -2,7 +2,7 @@ package hotkey
 
 import "github.com/vanisyd/hotkey/input"
 
-const maxTimeout = 2 //allowed difference between timestamps when multi tap feature enabled
+const maxTimeout = 4 //allowed difference between timestamps when multi tap feature enabled
 
 type Hotkey struct {
 	Keys          []input.KeyCode
