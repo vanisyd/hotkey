@@ -1,4 +1,4 @@
-package github
+package hotkey
 
 import "github.com/vanisyd/hotkey/input"
 
