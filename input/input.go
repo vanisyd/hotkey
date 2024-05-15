@@ -76,12 +76,14 @@ func (i *Input) NewInput() {
 }
 
 func (i *Input) Subscribe() {
+	// we're going to be constantly watching for changes in the input's event file, as soon as a key is pressed, new events are added into
 	f, err := os.Open(i.EventsPath)
 	if err != nil {
 		panic(err)
 	}
 	defer f.Close()
-
+	// events are in binary format and each size is 24 bytes (in case of keyboard)
+	// https://www.kernel.org/doc/Documentation/input/input.txt
 	data := make([]byte, 24)
 	for {
 		_, err := f.Read(data)

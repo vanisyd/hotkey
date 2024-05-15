@@ -8,16 +8,17 @@ import (
 
 func main() {
 	hk := hotkey.Hotkey{
-		KeyCombination: []input.KeyCode{
+		Keys: []input.KeyCode{
 			input.KeyCtrl,
 			input.KeyC,
 		},
+		TapsCount: 2,
 	}
 	go hk.Register()
 
 	for {
 		select {
-		case <-hk.Fired:
+		case <-hk.HotkeyPressed:
 			fmt.Println("Hotkey is pressed")
 		default:
 		}
