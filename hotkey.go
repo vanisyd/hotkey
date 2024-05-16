@@ -1,8 +1,10 @@
 package hotkey
 
-import "github.com/vanisyd/hotkey/input"
+import (
+	"github.com/vanisyd/hotkey/input"
+)
 
-const maxTimeout = 4 //allowed difference between timestamps when multi tap feature enabled
+const maxTimeout = 2 //allowed difference between timestamps when multi tap feature enabled
 
 type Hotkey struct {
 	Keys          []input.KeyCode
@@ -42,6 +44,8 @@ func (h *Hotkey) changeStatus(evt input.Event) {
 					if (evt.Timestamp - h.prevEvent.Timestamp) <= maxTimeout {
 						h.curTapsCount += 1
 					}
+				} else {
+					h.curTapsCount += 1
 				}
 				h.prevEvent = evt
 			} else {
