@@ -16,7 +16,8 @@ func main() {
 			input.KeyCtrl,
 			input.KeyC,
 		},
-		TapsCount: 2,
+		//Uncomment to enable multi tap feature (Ctrl + C + C) 
+		//TapsCount: 2,
 	}
 	go hk.Register()
 

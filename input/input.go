@@ -10,35 +10,9 @@ import (
 	"strings"
 )
 
-type KeyCode uint16
-type KeyMode uint32
-type EventType uint16
-
 const (
 	TypeKeyboard string = "Keyboard"
 )
-
-const (
-	ModeKeyRelease KeyMode = 0
-	ModeKeyPress   KeyMode = 1
-	ModeKeyHold    KeyMode = 2
-)
-
-const (
-	KeyCtrl KeyCode = 29
-	KeyE    KeyCode = 18
-	KeyC    KeyCode = 46
-)
-
-const EventTypeKeyPress EventType = 1
-
-type Event struct {
-	Timestamp        uint32
-	Val2, Val3, Val4 uint32 // We don't need this data, TODO: find a way to skip it
-	Type             EventType
-	Key              KeyCode
-	Mode             KeyMode
-}
 
 type Input struct {
 	EventsPath        string
